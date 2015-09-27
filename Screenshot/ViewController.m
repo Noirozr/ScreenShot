@@ -14,14 +14,37 @@
 
 @implementation ViewController
 
+// Life Cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    self.view.backgroundColor = [UIColor orangeColor];
+
+}
+- (IBAction)getShot:(id)sender {
+    double scale = [[UIScreen mainScreen] scale];
+    
+    UIImage *shot = nil;
+    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, scale);
+    {
+        if ([self.view respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)]) {
+            [self.view drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
+        } else {
+            [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+        }
+        
+        shot = UIGraphicsGetImageFromCurrentImageContext();
+    
+    }
+    UIGraphicsEndImageContext();
+    
+    UIImageView *imageView = [[UIImageView alloc]initWithImage:shot];
+    self.view = imageView;
+    NSLog(@"Image Saved!\n");
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    
 }
 
 @end
